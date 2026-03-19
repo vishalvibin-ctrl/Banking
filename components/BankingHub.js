@@ -115,7 +115,7 @@ function ProfitTab({ activeBankIds, onOpenDrawer }) {
   const maxP = Math.max(...allBanks.map(b=>b.profit2025), 1)
 
   const nplBanks = ALL_BANKS.filter(b => activeBankIds.includes(b.id) && b.nplRatio > 0)
-  const nplSorted = [...nplBanks].sort((a,b)=>nplSort==='npl'?b.nplRatio-a.nplRatio:nplSort==='nplAmt'?(b.grossLoans*b.nplRatio/100)-(a.grossLoans*a.nplRatio/100):b.grossLoans-a.grossLoans)
+  const nplSorted = [...nplBanks].sort((a,b)=>nplSort==='npl'?b.nplRatio-a.nplRatio:nplSort==='nplAmt'?(b.grossLoans*b.nplRatio/100)-(a.grossLoans*a.nplRatio/100):nplSort==='coverage'?a.coverageRatio-b.coverageRatio:b.grossLoans-a.grossLoans)
 
   return (
     <div>
@@ -166,7 +166,7 @@ function ProfitTab({ activeBankIds, onOpenDrawer }) {
       ):(
         <div>
           <div style={{display:'flex',gap:5,marginBottom:14,overflowX:'auto'}}>
-            {[{key:'npl',label:'NPL % (High\u2192Low)'},{key:'nplAmt',label:'NPL Amount'},{key:'loans',label:'Gross Loans'}].map(s=><button key={s.key} onClick={()=>setNplSort(s.key)} style={{padding:'6px 11px',borderRadius:6,border:'none',cursor:'pointer',whiteSpace:'nowrap',background:nplSort===s.key?'#F87171':'rgba(255,255,255,0.04)',color:nplSort===s.key?'#fff':'#6B7A8D',fontFamily:"'Outfit',sans-serif",fontWeight:600,fontSize:11}}>{s.label}</button>)}
+            {[{key:'npl',label:'NPL % (High\u2192Low)'},{key:'nplAmt',label:'NPL Amount'},{key:'coverage',label:'Coverage (Low\u2192High)'},{key:'loans',label:'Gross Loans'}].map(s=><button key={s.key} onClick={()=>setNplSort(s.key)} style={{padding:'6px 11px',borderRadius:6,border:'none',cursor:'pointer',whiteSpace:'nowrap',background:nplSort===s.key?'#F87171':'rgba(255,255,255,0.04)',color:nplSort===s.key?'#fff':'#6B7A8D',fontFamily:"'Outfit',sans-serif",fontWeight:600,fontSize:11}}>{s.label}</button>)}
           </div>
           <div style={{display:'flex',flexDirection:'column',gap:7}}>
             {nplSorted.map((bank,i)=>{
@@ -201,7 +201,7 @@ function ProfitTab({ activeBankIds, onOpenDrawer }) {
                   <span style={{fontSize:10,color:'#4A5568'}}>NPL Amt: <b style={{color:bank.nplRatio>5?'#F87171':'#A0A8B4'}}>AED {nplAmt.toFixed(1)}B</b></span>
                   <span style={{fontSize:10,color:'#4A5568'}}>Gross Loans: <b style={{color:'#A0A8B4'}}>AED {bank.grossLoans}B</b></span>
                   {bank.nplPrior>0&&<span style={{fontSize:10,color:'#4A5568'}}>Prior NPL: <b style={{color:'#6B7A8D'}}>{bank.nplPrior}%</b></span>}
-                  <span style={{fontSize:10,color:'#4A5568'}}>Assets: <b style={{color:'#A0A8B4'}}>AED {bank.totalAssets}B</b></span>
+                  {bank.coverageRatio>0&&<span style={{fontSize:10,color:'#4A5568'}}>Coverage: <b style={{color:bank.coverageRatio>=100?'#4ADE80':bank.coverageRatio>=80?'#F59E0B':'#F87171'}}>{bank.coverageRatio}%</b> {bank.coverageRatio>=100?'\u2705':bank.coverageRatio>=80?'\u26A0\uFE0F':'\u274C'}</span>}
                 </div>
               </div>
             )})}
