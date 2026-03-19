@@ -2,6 +2,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useState, useEffect } from 'react'
 import { ALL_BANKS, PRODUCTS, CATEGORY_LABELS, CATEGORY_FILTERS, fmtProfit } from '../data/banks'
+import { CREDIT_CARDS as CARDS } from '../data/cards'
 
 const Badge = ({ bank, size = 32 }) => (
   <div style={{ width:size, height:size, borderRadius:'50%', background:bank.color, flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Outfit',sans-serif", fontWeight:700, fontSize:size*0.28, color:'#fff', boxShadow:`0 2px 8px ${bank.color}33` }}>
@@ -61,47 +62,101 @@ function CompareTab({ activeBankIds, onOpenDrawer }) {
   const [cat, setCat] = useState('savings')
   const [selected, setSelected] = useState(['adcb','enbd','dib','alhilal','ajman'])
   const [showTable, setShowTable] = useState(false)
+  const [cardFeeType, setCardFeeType] = useState('all')
+  const [cardBenefit, setCardBenefit] = useState('all')
   const prod = PRODUCTS[cat]
   const banks = ALL_BANKS.filter(b => activeBankIds.includes(b.id) && prod.data[b.id])
   const toggle = id => setSelected(p => p.includes(id)?p.filter(x=>x!==id):[...p,id])
   const selBanks = banks.filter(b => selected.includes(b.id))
+
+  const filteredCards = CARDS.filter(c => {
+    const feeMatch = cardFeeType === 'all' || (cardFeeType === 'free' && c.free) || (cardFeeType === 'paid' && !c.free)
+    const benMatch = cardBenefit === 'all' || c[cardBenefit] === true
+    return feeMatch && benMatch
+  }).sort((a,b) => a.annualFee - b.annualFee)
+
+  const tierColors = {"Entry":"#4ADE80","Mid":"#60A5FA","Premium":"#F0C850","Ultra Premium":"#A78BFA"}
+  const benefitFilters = [{key:"all",label:"All",icon:"\uD83C\uDFB4"},{key:"cinema",label:"Cinema",icon:"\uD83C\uDFAC"},{key:"golf",label:"Golf",icon:"\u26F3"},{key:"valet",label:"Valet",icon:"\uD83D\uDE97"},{key:"lounge",label:"Lounge",icon:"\u2708\uFE0F"},{key:"dining",label:"Dining",icon:"\uD83C\uDF7D\uFE0F"},{key:"airmiles",label:"Miles",icon:"\uD83D\uDEEB"},{key:"sharia",label:"Sharia",icon:"\u2622\uFE0F"}]
+  const benefitIcons = {cinema:"\uD83C\uDFAC",golf:"\u26F3",valet:"\uD83D\uDE97",lounge:"\u2708\uFE0F",dining:"\uD83C\uDF7D\uFE0F",airmiles:"\uD83D\uDEEB",travel:"\uD83C\uDF0D",sharia:"\u2622\uFE0F"}
 
   return (
     <div>
       <div style={{ display:'flex', gap:5, overflowX:'auto', padding:3, marginBottom:16, background:'rgba(255,255,255,0.035)', borderRadius:100, border:'1px solid rgba(255,255,255,0.05)' }}>
         {Object.entries(PRODUCTS).map(([k,v]) => <button key={k} onClick={()=>{setCat(k);setShowTable(false)}} style={{ padding:'9px 15px', border:'none', borderRadius:100, whiteSpace:'nowrap', cursor:'pointer', background:cat===k?'#F0C850':'transparent', color:cat===k?'#0B1120':'#7A8699', fontFamily:"'Outfit',sans-serif", fontWeight:cat===k?700:500, fontSize:12.5 }}><span style={{marginRight:4}}>{v.icon}</span>{v.label}</button>)}
       </div>
-      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:12, gap:8, flexWrap:'wrap' }}>
-        <div style={{ display:'flex', gap:7, alignItems:'center' }}>
-          <button onClick={onOpenDrawer} style={{ padding:'8px 14px', borderRadius:9, border:'1px dashed rgba(240,200,80,0.35)', background:'rgba(240,200,80,0.05)', color:'#F0C850', cursor:'pointer', fontFamily:"'Outfit',sans-serif", fontWeight:600, fontSize:11.5, display:'flex', alignItems:'center', gap:4 }}><span style={{fontSize:14}}>+</span> Add Banks</button>
-          <span style={{ fontSize:11, color:'#3A4558' }}>{banks.length} with products</span>
-        </div>
-        {selBanks.length>=2 && <button onClick={()=>setShowTable(!showTable)} style={{ padding:'8px 18px', borderRadius:100, border:'none', cursor:'pointer', background:showTable?'#2A3448':'linear-gradient(135deg,#F0C850,#D4A830)', color:showTable?'#8A96A8':'#0B1120', fontFamily:"'Outfit',sans-serif", fontWeight:700, fontSize:12, boxShadow:showTable?'none':'0 3px 12px rgba(240,200,80,0.2)' }}>{showTable ? '\u2190 Cards' : `Compare ${selBanks.length} \u2192`}</button>}
-      </div>
-      {showTable && selBanks.length>=2 ? (
-        <div style={{ background:'rgba(255,255,255,0.025)', borderRadius:13, overflow:'hidden', border:'1px solid rgba(255,255,255,0.05)' }}>
-          <div style={{ overflowX:'auto' }}>
-            <table style={{ width:'100%', borderCollapse:'collapse', fontFamily:"'Outfit',sans-serif", minWidth:Math.max(420,selBanks.length*120) }}>
-              <thead><tr>
-                <th style={{ padding:'13px 13px', textAlign:'left', background:'#0F1A2E', color:'#F0C850', fontWeight:600, fontSize:10.5, letterSpacing:'0.06em', textTransform:'uppercase', position:'sticky', left:0, zIndex:2 }}>Feature</th>
-                {selBanks.map(b=><th key={b.id} style={{ padding:'11px 8px', textAlign:'center', background:'#0F1A2E', color:'#C0C8D4', fontWeight:600, fontSize:10.5 }}><div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:4}}><Badge bank={b} size={24}/><span style={{maxWidth:72,lineHeight:1.2}}>{b.name}</span></div></th>)}
-              </tr></thead>
-              <tbody>{prod.fields.map((f,fi)=><tr key={f}><td style={{ padding:'10px 13px', fontWeight:600, fontSize:11, color:'#A0A8B4', borderBottom:'1px solid rgba(255,255,255,0.025)', background:'#0B1120', position:'sticky', left:0, zIndex:1 }}>{f}</td>{selBanks.map(b=><td key={b.id} style={{ padding:'10px 8px', textAlign:'center', fontSize:11, fontWeight:500, color:'#C0C8D4', borderBottom:'1px solid rgba(255,255,255,0.025)', background:fi%2===0?'rgba(255,255,255,0.012)':'transparent' }}>{prod.data[b.id]?.[fi] || '\u2014'}</td>)}</tr>)}</tbody>
-            </table>
+
+      {cat === 'cards' ? (
+        <div>
+          <div style={{display:'flex',gap:5,marginBottom:12,background:'rgba(255,255,255,0.03)',borderRadius:100,padding:3,border:'1px solid rgba(255,255,255,0.04)'}}>
+            {[{key:'all',label:'All Cards'},{key:'free',label:'Free for Life'},{key:'paid',label:'Paid Premium'}].map(f=>
+              <button key={f.key} onClick={()=>setCardFeeType(f.key)} style={{flex:1,padding:'8px 0',border:'none',borderRadius:100,cursor:'pointer',background:cardFeeType===f.key?(f.key==='free'?'#4ADE80':f.key==='paid'?'#A78BFA':'#F0C850'):'transparent',color:cardFeeType===f.key?'#0B1120':'#6B7A8D',fontFamily:"'Outfit',sans-serif",fontWeight:cardFeeType===f.key?700:500,fontSize:11.5}}>{f.label}</button>
+            )}
           </div>
+          <div style={{display:'flex',gap:4,marginBottom:14,overflowX:'auto'}}>
+            {benefitFilters.map(f=><button key={f.key} onClick={()=>setCardBenefit(f.key)} style={{padding:'5px 10px',borderRadius:6,border:'none',cursor:'pointer',whiteSpace:'nowrap',background:cardBenefit===f.key?'rgba(240,200,80,0.15)':'rgba(255,255,255,0.04)',color:cardBenefit===f.key?'#F0C850':'#5A6878',fontFamily:"'Outfit',sans-serif",fontWeight:600,fontSize:10.5}}>{f.icon} {f.label}</button>)}
+          </div>
+          <div style={{fontSize:11,color:'#4A5568',marginBottom:10}}>{filteredCards.length} cards found</div>
+          <div style={{display:'flex',flexDirection:'column',gap:7}}>
+            {filteredCards.map((card,i)=>(
+              <div key={card.id} style={{background:'rgba(255,255,255,0.02)',borderRadius:12,padding:'12px 13px',border:'1px solid rgba(255,255,255,0.035)',animation:`fadeUp 0.3s ease ${i*0.02}s both`}}>
+                <div style={{display:'flex',alignItems:'center',gap:9,marginBottom:8}}>
+                  <div style={{width:32,height:32,borderRadius:'50%',background:card.color,display:'flex',alignItems:'center',justifyContent:'center',fontSize:8,fontWeight:700,color:'#fff',flexShrink:0}}>{card.bank.split(' ')[0].slice(0,3).toUpperCase()}</div>
+                  <div style={{flex:1}}>
+                    <div style={{fontFamily:"'Fraunces',serif",fontSize:13,fontWeight:700,color:'#E0E6ED'}}>{card.name}</div>
+                    <div style={{fontSize:10,color:'#4A5568'}}>{card.bank} &middot; {card.network}</div>
+                  </div>
+                  <div style={{textAlign:'right'}}>
+                    <div style={{fontFamily:"'Outfit',sans-serif",fontSize:14,fontWeight:800,color:card.free?'#4ADE80':'#A78BFA'}}>{card.free?'FREE':` AED ${card.annualFee}`}</div>
+                    <span style={{fontSize:8,fontWeight:700,padding:'1px 5px',borderRadius:3,background:`${tierColors[card.tier]}20`,color:tierColors[card.tier]}}>{card.tier}</span>
+                  </div>
+                </div>
+                <div style={{display:'flex',gap:4,marginBottom:6,flexWrap:'wrap'}}>
+                  {Object.entries(benefitIcons).map(([k,icon])=>card[k]?<span key={k} style={{fontSize:9,padding:'2px 6px',borderRadius:4,background:'rgba(240,200,80,0.08)',color:'#F0C850'}}>{icon} {k}</span>:null)}
+                </div>
+                <div style={{display:'flex',gap:12,flexWrap:'wrap'}}>
+                  <span style={{fontSize:10,color:'#4A5568'}}>Cashback: <b style={{color:'#A0A8B4'}}>{card.cashback}</b></span>
+                  <span style={{fontSize:10,color:'#4A5568'}}>Min Salary: <b style={{color:'#A0A8B4'}}>AED {card.minSalary.toLocaleString()}</b></span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p style={{marginTop:12,fontSize:10,color:'#2D3A4E',fontStyle:'italic'}}>Card offers subject to T&amp;C. Verify directly with banks. Free for Life may require minimum spend criteria.</p>
         </div>
       ) : (
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(245px,1fr))', gap:9 }}>
-          {banks.map((bank,i)=>{const sel=selected.includes(bank.id);return(
-            <div key={bank.id} onClick={()=>toggle(bank.id)} style={{ background:sel?`${bank.color}10`:'rgba(255,255,255,0.02)', border:sel?`2px solid ${bank.color}48`:'2px solid rgba(255,255,255,0.035)', borderRadius:12, padding:13, cursor:'pointer', transition:'all 0.25s', position:'relative', animation:`fadeUp 0.3s ease ${i*0.03}s both` }}>
-              {sel&&<div style={{position:'absolute',top:8,right:8,width:19,height:19,borderRadius:'50%',background:bank.color,display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontSize:10.5,fontWeight:700}}>{'\u2713'}</div>}
-              <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:11}}><Badge bank={bank} size={32}/><div><div style={{fontFamily:"'Fraunces',serif",fontSize:13.5,fontWeight:700,color:'#E0E6ED'}}>{bank.name}</div><div style={{fontSize:10,color:'#4A5568'}}>{bank.type}</div></div></div>
-              {prod.fields.map((f,fi)=><div key={f} style={{display:'flex',justifyContent:'space-between',padding:'3.5px 0',borderBottom:fi<prod.fields.length-1?'1px solid rgba(255,255,255,0.025)':'none'}}><span style={{fontSize:10.5,color:'#4A5568'}}>{f}</span><span style={{fontSize:11,color:'#A0A8B4',fontWeight:600}}>{prod.data[bank.id]?.[fi] || '\u2014'}</span></div>)}
+        <div>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:12, gap:8, flexWrap:'wrap' }}>
+            <div style={{ display:'flex', gap:7, alignItems:'center' }}>
+              <button onClick={onOpenDrawer} style={{ padding:'8px 14px', borderRadius:9, border:'1px dashed rgba(240,200,80,0.35)', background:'rgba(240,200,80,0.05)', color:'#F0C850', cursor:'pointer', fontFamily:"'Outfit',sans-serif", fontWeight:600, fontSize:11.5, display:'flex', alignItems:'center', gap:4 }}><span style={{fontSize:14}}>+</span> Add Banks</button>
+              <span style={{ fontSize:11, color:'#3A4558' }}>{banks.length} with products</span>
             </div>
-          )})}
+            {selBanks.length>=2 && <button onClick={()=>setShowTable(!showTable)} style={{ padding:'8px 18px', borderRadius:100, border:'none', cursor:'pointer', background:showTable?'#2A3448':'linear-gradient(135deg,#F0C850,#D4A830)', color:showTable?'#8A96A8':'#0B1120', fontFamily:"'Outfit',sans-serif", fontWeight:700, fontSize:12, boxShadow:showTable?'none':'0 3px 12px rgba(240,200,80,0.2)' }}>{showTable ? '\u2190 Cards' : `Compare ${selBanks.length} \u2192`}</button>}
+          </div>
+          {showTable && selBanks.length>=2 ? (
+            <div style={{ background:'rgba(255,255,255,0.025)', borderRadius:13, overflow:'hidden', border:'1px solid rgba(255,255,255,0.05)' }}>
+              <div style={{ overflowX:'auto' }}>
+                <table style={{ width:'100%', borderCollapse:'collapse', fontFamily:"'Outfit',sans-serif", minWidth:Math.max(420,selBanks.length*120) }}>
+                  <thead><tr>
+                    <th style={{ padding:'13px 13px', textAlign:'left', background:'#0F1A2E', color:'#F0C850', fontWeight:600, fontSize:10.5, letterSpacing:'0.06em', textTransform:'uppercase', position:'sticky', left:0, zIndex:2 }}>Feature</th>
+                    {selBanks.map(b=><th key={b.id} style={{ padding:'11px 8px', textAlign:'center', background:'#0F1A2E', color:'#C0C8D4', fontWeight:600, fontSize:10.5 }}><div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:4}}><Badge bank={b} size={24}/><span style={{maxWidth:72,lineHeight:1.2}}>{b.name}</span></div></th>)}
+                  </tr></thead>
+                  <tbody>{prod.fields.map((f,fi)=><tr key={f}><td style={{ padding:'10px 13px', fontWeight:600, fontSize:11, color:'#A0A8B4', borderBottom:'1px solid rgba(255,255,255,0.025)', background:'#0B1120', position:'sticky', left:0, zIndex:1 }}>{f}</td>{selBanks.map(b=><td key={b.id} style={{ padding:'10px 8px', textAlign:'center', fontSize:11, fontWeight:500, color:'#C0C8D4', borderBottom:'1px solid rgba(255,255,255,0.025)', background:fi%2===0?'rgba(255,255,255,0.012)':'transparent' }}>{prod.data[b.id]?.[fi] || '\u2014'}</td>)}</tr>)}</tbody>
+                </table>
+              </div>
+            </div>
+          ) : (
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(245px,1fr))', gap:9 }}>
+              {banks.map((bank,i)=>{const sel=selected.includes(bank.id);return(
+                <div key={bank.id} onClick={()=>toggle(bank.id)} style={{ background:sel?`${bank.color}10`:'rgba(255,255,255,0.02)', border:sel?`2px solid ${bank.color}48`:'2px solid rgba(255,255,255,0.035)', borderRadius:12, padding:13, cursor:'pointer', transition:'all 0.25s', position:'relative', animation:`fadeUp 0.3s ease ${i*0.03}s both` }}>
+                  {sel&&<div style={{position:'absolute',top:8,right:8,width:19,height:19,borderRadius:'50%',background:bank.color,display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontSize:10.5,fontWeight:700}}>{'\u2713'}</div>}
+                  <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:11}}><Badge bank={bank} size={32}/><div><div style={{fontFamily:"'Fraunces',serif",fontSize:13.5,fontWeight:700,color:'#E0E6ED'}}>{bank.name}</div><div style={{fontSize:10,color:'#4A5568'}}>{bank.type}</div></div></div>
+                  {prod.fields.map((f,fi)=><div key={f} style={{display:'flex',justifyContent:'space-between',padding:'3.5px 0',borderBottom:fi<prod.fields.length-1?'1px solid rgba(255,255,255,0.025)':'none'}}><span style={{fontSize:10.5,color:'#4A5568'}}>{f}</span><span style={{fontSize:11,color:'#A0A8B4',fontWeight:600}}>{prod.data[bank.id]?.[fi] || '\u2014'}</span></div>)}
+                </div>
+              )})}
+            </div>
+          )}
+          <p style={{marginTop:12,fontSize:10,color:'#2D3A4E',fontStyle:'italic'}}>* Islamic banks offer profit rates (Murabaha/Ijarah). All rates indicative.</p>
         </div>
       )}
-      <p style={{marginTop:12,fontSize:10,color:'#2D3A4E',fontStyle:'italic'}}>* Islamic banks offer profit rates (Murabaha/Ijarah). All rates indicative.</p>
     </div>
   )
 }
