@@ -378,6 +378,7 @@ export default function BankingHub() {
         <div style={{maxWidth:900,margin:'0 auto',position:'relative'}}>
           <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:4}}>
             <span style={{fontSize:9,letterSpacing:'0.14em',color:'#F0C850',fontWeight:700,textTransform:'uppercase'}}>UAE Banking Hub</span>
+            <span style={{padding:'2px 6px',borderRadius:4,background:'rgba(139,92,246,0.15)',color:'#A78BFA',fontSize:8,fontWeight:700,letterSpacing:'0.08em',textTransform:'uppercase'}}>Beta</span>
             <span style={{width:20,height:1,background:'#F0C85030'}}/>
             <span style={{fontSize:9,color:'#3A4558'}}>{ALL_BANKS.length} banks</span>
           </div>
@@ -387,6 +388,10 @@ export default function BankingHub() {
           <p style={{fontSize:12,color:'#4A5568',maxWidth:360,lineHeight:1.5}}>
             {"Complete UAE banking directory \u2014 compare, track profits & stay informed."}
           </p>
+          <div style={{marginTop:8,display:'flex',alignItems:'center',gap:6}}>
+            <span style={{width:6,height:6,borderRadius:'50%',background:'#4ADE80'}}/>
+            <span style={{fontSize:9.5,color:'#4A5568'}}>Data as of: FY 2025 annual results (Jan\u2013Mar 2026 filings)</span>
+          </div>
         </div>
       </div>
 
@@ -403,8 +408,18 @@ export default function BankingHub() {
         {tab==='compare'&&<CompareTab activeBankIds={activeBankIds} onOpenDrawer={()=>setDrawerOpen(true)}/>}
       </div>
 
-      <div style={{textAlign:'center',padding:'16px 12px',borderTop:'1px solid rgba(255,255,255,0.025)',fontSize:9.5,color:'#2D3A4E'}}>
-        {"CBUAE Register (June 2025) \u00B7 FY 2025 bank filings \u00B7 Data indicative \u2014 verify with your bank"}
+      <div style={{textAlign:'center',padding:'20px 12px',borderTop:'1px solid rgba(255,255,255,0.025)'}}>
+        <div style={{fontSize:9.5,color:'#2D3A4E',marginBottom:8}}>
+          {"CBUAE Register (June 2025) \u00B7 FY 2025 bank filings \u00B7 Data indicative \u2014 verify with your bank"}
+        </div>
+        <div style={{fontSize:10,color:'#4A5568',marginBottom:4}}>
+          {"Developed by "}
+          <span style={{color:'#F0C850',fontWeight:700}}>Vishal Vibin</span>
+        </div>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:6}}>
+          <span style={{padding:'2px 6px',borderRadius:4,background:'rgba(139,92,246,0.12)',color:'#A78BFA',fontSize:8,fontWeight:700,letterSpacing:'0.06em'}}>BETA v1.0</span>
+          <span style={{fontSize:8.5,color:'#2D3A4E'}}>{"\u00A9 2026"}</span>
+        </div>
       </div>
 
       <AddBankDrawer visible={drawerOpen} activeBankIds={activeBankIds} onToggle={toggleBank} onClose={()=>setDrawerOpen(false)}/>
