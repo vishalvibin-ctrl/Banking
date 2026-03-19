@@ -108,9 +108,9 @@ function CompareTab({ activeBankIds, onOpenDrawer }) {
 
 function ProfitTab({ activeBankIds, onOpenDrawer }) {
   const [sortBy, setSortBy] = useState('profit')
-  const banks = ALL_BANKS.filter(b => activeBankIds.includes(b.id) && b.profit2025 > 0)
+  const banks = ALL_BANKS.filter(b => activeBankIds.includes(b.id) && (b.profit2025 !== 0 || b.note))
   const sorted = [...banks].sort((a,b)=>sortBy==='profit'?b.profit2025-a.profit2025:sortBy==='growth'?b.yoyGrowth-a.yoyGrowth:sortBy==='assets'?b.totalAssets-a.totalAssets:b.roe-a.roe)
-  const maxP = Math.max(...banks.map(b=>b.profit2025))
+  const maxP = Math.max(...banks.map(b=>b.profit2025), 1)
 
   return (
     <div>
@@ -135,15 +135,16 @@ function ProfitTab({ activeBankIds, onOpenDrawer }) {
                 <div style={{fontSize:10,color:'#4A5568'}}>{bank.type} &middot; {bank.hq} &middot; {bank.exchange}</div>
               </div>
               <div style={{textAlign:'right'}}>
-                <div style={{fontFamily:"'Outfit',sans-serif",fontSize:16,fontWeight:800,color:'#F0C850'}}>{fmtProfit(bank.profit2025)}</div>
-                <div style={{fontSize:10,fontWeight:700,color:bank.yoyGrowth>=0?'#4ADE80':'#F87171'}}>{bank.yoyGrowth>=0?'\u25B2':'\u25BC'} {Math.abs(bank.yoyGrowth)}%</div>
+                <div style={{fontFamily:"'Outfit',sans-serif",fontSize:16,fontWeight:800,color:bank.profit2025<0?'#F87171':'#F0C850'}}>{fmtProfit(bank.profit2025)}</div>
+                {bank.profit2025!==0&&<div style={{fontSize:10,fontWeight:700,color:bank.yoyGrowth>=0?'#4ADE80':'#F87171'}}>{bank.yoyGrowth>=0?'\u25B2':'\u25BC'} {Math.abs(bank.yoyGrowth)}%</div>}
               </div>
             </div>
-            <div style={{height:4,background:'rgba(255,255,255,0.025)',borderRadius:2,overflow:'hidden'}}><div style={{height:'100%',borderRadius:2,width:`${Math.max(2,(bank.profit2025/maxP)*100)}%`,background:`linear-gradient(90deg,${bank.color},${bank.color}66)`,transition:'width 0.5s'}}/></div>
+            {bank.profit2025>0&&<div style={{height:4,background:'rgba(255,255,255,0.025)',borderRadius:2,overflow:'hidden'}}><div style={{height:'100%',borderRadius:2,width:`${Math.max(2,(bank.profit2025/maxP)*100)}%`,background:`linear-gradient(90deg,${bank.color},${bank.color}66)`,transition:'width 0.5s'}}/></div>}
             <div style={{display:'flex',gap:12,marginTop:7,flexWrap:'wrap'}}>
               <span style={{fontSize:10,color:'#4A5568'}}>Assets: <b style={{color:'#A0A8B4'}}>AED {bank.totalAssets}B</b></span>
               {bank.roe>0&&<span style={{fontSize:10,color:'#4A5568'}}>ROE: <b style={{color:'#A0A8B4'}}>{bank.roe}%</b></span>}
-              <span style={{fontSize:10,color:'#4A5568'}}>FY24: <b style={{color:'#A0A8B4'}}>{fmtProfit(bank.profit2024)}</b></span>
+              {bank.profit2024!==0&&<span style={{fontSize:10,color:'#4A5568'}}>FY24: <b style={{color:bank.profit2024<0?'#F87171':'#A0A8B4'}}>{fmtProfit(bank.profit2024)}</b></span>}
+              {bank.note&&<span style={{fontSize:10,color:bank.profit2025<0?'#F87171':'#6B7A8D',fontWeight:600}}>{bank.profit2025<0?'Net loss — ADCB subsidiary':bank.note}</span>}
             </div>
           </div>
         ))}
@@ -266,7 +267,7 @@ function DirectoryTab({ activeBankIds, onOpenDrawer }) {
                   <div style={{fontSize:11.5,fontWeight:600,color:'#E0E6ED'}}>{bank.name}</div>
                   <div style={{fontSize:9.5,color:'#4A5568'}}>{bank.hq} &middot; Est. {bank.est} &middot; {bank.exchange}{bank.totalAssets > 0 ? ` \u00B7 AED ${bank.totalAssets}B assets` : ''}</div>
                 </div>
-                {bank.profit2025>0&&<div style={{textAlign:'right',flexShrink:0}}><div style={{fontSize:10.5,fontWeight:700,color:'#F0C850'}}>{fmtProfit(bank.profit2025)}</div><div style={{fontSize:9,color:bank.yoyGrowth>=0?'#4ADE80':'#F87171',fontWeight:600}}>{bank.yoyGrowth>=0?'\u25B2':'\u25BC'}{Math.abs(bank.yoyGrowth)}%</div></div>}
+                {bank.profit2025>0?<div style={{textAlign:'right',flexShrink:0}}><div style={{fontSize:10.5,fontWeight:700,color:'#F0C850'}}>{fmtProfit(bank.profit2025)}</div><div style={{fontSize:9,color:bank.yoyGrowth>=0?'#4ADE80':'#F87171',fontWeight:600}}>{bank.yoyGrowth>=0?'\u25B2':'\u25BC'}{Math.abs(bank.yoyGrowth)}%</div></div>:bank.note?<div style={{fontSize:9.5,fontWeight:700,color:'#F87171',flexShrink:0}}>{bank.note}</div>:null}
               </div>
             ))}
           </div>
