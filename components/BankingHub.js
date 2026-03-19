@@ -237,6 +237,7 @@ function DirectoryTab({ activeBankIds, onOpenDrawer }) {
   })
   const grouped = {}
   banks.forEach(b => { const c = CATEGORY_LABELS[b.category] || b.category; if(!grouped[c]) grouped[c]=[]; grouped[c].push(b) })
+  Object.values(grouped).forEach(list => list.sort((a, b) => b.totalAssets - a.totalAssets))
 
   return (
     <div>
@@ -256,15 +257,16 @@ function DirectoryTab({ activeBankIds, onOpenDrawer }) {
       {Object.entries(grouped).map(([catName, list]) => (
         <div key={catName} style={{marginBottom:18}}>
           <div style={{fontSize:11,fontWeight:700,color:'#F0C850',textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:8,paddingBottom:4,borderBottom:'1px solid rgba(240,200,80,0.15)'}}>{catName} ({list.length})</div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))',gap:6}}>
-            {list.map(bank=>(
-              <div key={bank.id} style={{display:'flex',alignItems:'center',gap:8,padding:'8px 10px',borderRadius:8,background:'rgba(255,255,255,0.015)',border:'1px solid rgba(255,255,255,0.025)'}}>
+          <div style={{display:'flex',flexDirection:'column',gap:5}}>
+            {list.map((bank,idx)=>(
+              <div key={bank.id} style={{display:'flex',alignItems:'center',gap:8,padding:'9px 10px',borderRadius:8,background:'rgba(255,255,255,0.015)',border:'1px solid rgba(255,255,255,0.025)'}}>
+                <div style={{width:18,height:18,borderRadius:4,background:'rgba(240,200,80,0.08)',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,fontSize:9.5,color:'#F0C850',flexShrink:0}}>{idx+1}</div>
                 <Badge bank={bank} size={26}/>
-                <div style={{flex:1}}>
+                <div style={{flex:1,minWidth:0}}>
                   <div style={{fontSize:11.5,fontWeight:600,color:'#E0E6ED'}}>{bank.name}</div>
-                  <div style={{fontSize:9.5,color:'#4A5568'}}>{bank.hq} &middot; Est. {bank.est} &middot; {bank.exchange}</div>
+                  <div style={{fontSize:9.5,color:'#4A5568'}}>{bank.hq} &middot; Est. {bank.est} &middot; {bank.exchange}{bank.totalAssets > 0 ? ` \u00B7 AED ${bank.totalAssets}B assets` : ''}</div>
                 </div>
-                {bank.profit2025>0&&<div style={{fontSize:10,fontWeight:700,color:'#F0C850'}}>{fmtProfit(bank.profit2025)}</div>}
+                {bank.profit2025>0&&<div style={{textAlign:'right',flexShrink:0}}><div style={{fontSize:10.5,fontWeight:700,color:'#F0C850'}}>{fmtProfit(bank.profit2025)}</div><div style={{fontSize:9,color:bank.yoyGrowth>=0?'#4ADE80':'#F87171',fontWeight:600}}>{bank.yoyGrowth>=0?'\u25B2':'\u25BC'}{Math.abs(bank.yoyGrowth)}%</div></div>}
               </div>
             ))}
           </div>
