@@ -219,7 +219,7 @@ function AddBankDrawer({ visible, activeBankIds, onToggle, onClose }) {
               </div>
             )
           })}
-          {available.length===0 && <div style={{ textAlign:'center', padding:24, color:'#3A4558', fontSize:12 }}>No banks match "{q}"</div>}
+          {available.length===0 && <div style={{ textAlign:'center', padding:24, color:'#3A4558', fontSize:12 }}>No banks match No banks found for: {q}ldquo;{q}No banks found for: {q}rdquo;</div>}
         </div>
       </div>
     </div>
@@ -343,7 +343,7 @@ function NewsTab() {
   return (
     <div>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
-        <div><h3 style={{fontFamily:"'Fraunces',serif",fontSize:16,fontWeight:700,color:'#F0C850',marginBottom:2}}>UAE Banking News</h3><p style={{fontSize:11,color:'#4A5568'}}>Latest headlines & earnings</p></div>
+        <div><h3 style={{fontFamily:"'Fraunces',serif",fontSize:16,fontWeight:700,color:'#F0C850',marginBottom:2}}>UAE Banking News</h3><p style={{fontSize:11,color:'#4A5568'}}>Latest headlines &amp; earnings</p></div>
         <button onClick={fetchNews} disabled={loading} style={{padding:'6px 12px',borderRadius:6,border:'none',cursor:loading?'default':'pointer',background:loading?'#1A2438':'rgba(240,200,80,0.08)',color:'#F0C850',fontFamily:"'Outfit',sans-serif",fontWeight:600,fontSize:11,opacity:loading?0.5:1}}>{loading?'Loading...':'↻ Refresh'}</button>
       </div>
       {error&&<div style={{padding:'8px 11px',background:'rgba(245,158,11,0.06)',borderRadius:8,border:'1px solid rgba(245,158,11,0.1)',marginBottom:12,fontSize:11,color:'#F59E0B'}}>{error}</div>}
@@ -434,7 +434,7 @@ export default function BankingHub() {
             Smart Banking<br/><span style={{color:'#F0C850'}}>Intelligence</span>
           </h1>
           <p style={{fontSize:12,color:'#4A5568',maxWidth:360,lineHeight:1.5}}>
-            Complete UAE banking directory — compare, track profits & stay informed.
+            Complete UAE banking directory — compare, track profits &amp; stay informed.
           </p>
         </div>
       </div>
