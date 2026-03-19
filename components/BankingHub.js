@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 // Complete UAE Banks Database — sourced from CBUAE Register (June 2025) + bank filings
 // Categories: national_conventional, national_islamic, foreign_conventional, foreign_islamic, digital
 
@@ -170,7 +171,7 @@ const fmtProfit = (v) => {
   if (v <= 0) return "—";
   return v >= 1 ? `AED ${v.toFixed(1)}B` : `AED ${(v * 1000).toFixed(0)}M`;
 };
-import { useState, useEffect } from 'react'
+
 
 const Badge = ({ bank, size = 32 }) => (
   <div style={{ width:size, height:size, borderRadius:'50%', background:bank.color, flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Outfit',sans-serif", fontWeight:700, fontSize:size*0.28, color:'#fff', boxShadow:`0 2px 8px ${bank.color}33` }}>
@@ -193,10 +194,10 @@ function AddBankDrawer({ visible, activeBankIds, onToggle, onClose }) {
         <div style={{ width:40, height:4, borderRadius:2, background:'#2A3448', margin:'0 auto 14px' }} />
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:12 }}>
           <h3 style={{ fontFamily:"'Fraunces',serif", fontSize:17, fontWeight:700, color:'#F0C850' }}>All UAE Banks ({ALL_BANKS.length})</h3>
-          <button onClick={onClose} style={{ width:28, height:28, borderRadius:7, border:'none', cursor:'pointer', background:'rgba(255,255,255,0.06)', color:'#8A96A8', fontSize:15, fontWeight:700, display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
+          <button onClick={onClose} style={{ width:28, height:28, borderRadius:7, border:'none', cursor:'pointer', background:'rgba(255,255,255,0.06)', color:'#8A96A8', fontSize:15, fontWeight:700, display:'flex', alignItems:'center', justifyContent:'center' }}>&#x2715;</button>
         </div>
         <div style={{ position:'relative', marginBottom:10 }}>
-          <span style={{ position:'absolute', left:11, top:'50%', transform:'translateY(-50%)', fontSize:14, color:'#4A5568' }}>🔍</span>
+          <span style={{ position:'absolute', left:11, top:'50%', transform:'translateY(-50%)', fontSize:14, color:'#4A5568' }}>&#x1F50D;</span>
           <input type="text" placeholder="Search by name, type, HQ, exchange..." value={q} onChange={e=>setQ(e.target.value)} autoFocus style={{ width:'100%', padding:'10px 12px 10px 34px', borderRadius:9, border:'1px solid rgba(255,255,255,0.07)', background:'rgba(255,255,255,0.03)', fontFamily:"'Outfit',sans-serif", fontSize:12.5, color:'#E0E6ED', outline:'none' }} />
         </div>
         <div style={{ display:'flex', gap:4, marginBottom:12, overflowX:'auto', flexWrap:'nowrap' }}>
@@ -204,7 +205,7 @@ function AddBankDrawer({ visible, activeBankIds, onToggle, onClose }) {
             <button key={f.key} onClick={()=>setFilter(f.key)} style={{ padding:'5px 10px', borderRadius:6, border:'none', cursor:'pointer', whiteSpace:'nowrap', background:filter===f.key?'rgba(240,200,80,0.15)':'rgba(255,255,255,0.04)', color:filter===f.key?'#F0C850':'#5A6878', fontFamily:"'Outfit',sans-serif", fontWeight:600, fontSize:10.5 }}>{f.label}</button>
           ))}
         </div>
-        <div style={{ fontSize:10.5, color:'#3A4558', marginBottom:8 }}>{activeBankIds.length} active · {available.length} showing</div>
+        <div style={{ fontSize:10.5, color:'#3A4558', marginBottom:8 }}>{activeBankIds.length} active &middot; {available.length} showing</div>
         <div style={{ flex:1, overflowY:'auto', display:'flex', flexDirection:'column', gap:4 }}>
           {available.map(bank => {
             const active = activeBankIds.includes(bank.id)
@@ -213,13 +214,13 @@ function AddBankDrawer({ visible, activeBankIds, onToggle, onClose }) {
                 <Badge bank={bank} size={26} />
                 <div style={{ flex:1 }}>
                   <div style={{ fontSize:12, fontWeight:600, color:'#E0E6ED' }}>{bank.name}</div>
-                  <div style={{ fontSize:10, color:'#4A5568' }}>{bank.type} · {bank.hq} · {bank.exchange} {bank.profit2025 > 0 ? `· ${fmtProfit(bank.profit2025)}` : ''}</div>
+                  <div style={{ fontSize:10, color:'#4A5568' }}>{bank.type} &middot; {bank.hq} &middot; {bank.exchange} {bank.profit2025 > 0 ? ` · ${fmtProfit(bank.profit2025)}` : ''}</div>
                 </div>
-                <div style={{ width:22, height:22, borderRadius:5, background:active?bank.color:'rgba(255,255,255,0.04)', display:'flex', alignItems:'center', justifyContent:'center', color:active?'#fff':'#3A4558', fontSize:12, fontWeight:700, transition:'all 0.2s' }}>{active?'✓':'+'}</div>
+                <div style={{ width:22, height:22, borderRadius:5, background:active?bank.color:'rgba(255,255,255,0.04)', display:'flex', alignItems:'center', justifyContent:'center', color:active?'#fff':'#3A4558', fontSize:12, fontWeight:700, transition:'all 0.2s' }}>{active?'\u2713':'+'}</div>
               </div>
             )
           })}
-          {available.length===0 && <div style={{ textAlign:'center', padding:24, color:'#3A4558', fontSize:12 }}>No banks match No banks found for: {q}ldquo;{q}No banks found for: {q}rdquo;</div>}
+          {available.length===0 && <div style={{ textAlign:'center', padding:24, color:'#3A4558', fontSize:12 }}>No banks found for: {q}</div>}
         </div>
       </div>
     </div>
@@ -242,10 +243,10 @@ function CompareTab({ activeBankIds, onOpenDrawer }) {
       </div>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:12, gap:8, flexWrap:'wrap' }}>
         <div style={{ display:'flex', gap:7, alignItems:'center' }}>
-          <button onClick={onOpenDrawer} style={{ padding:'8px 14px', borderRadius:9, border:'1px dashed rgba(240,200,80,0.35)', background:'rgba(240,200,80,0.05)', color:'#F0C850', cursor:'pointer', fontFamily:"'Outfit',sans-serif", fontWeight:600, fontSize:11.5, display:'flex', alignItems:'center', gap:4 }}><span style={{fontSize:14}}>＋</span> Add Banks</button>
+          <button onClick={onOpenDrawer} style={{ padding:'8px 14px', borderRadius:9, border:'1px dashed rgba(240,200,80,0.35)', background:'rgba(240,200,80,0.05)', color:'#F0C850', cursor:'pointer', fontFamily:"'Outfit',sans-serif", fontWeight:600, fontSize:11.5, display:'flex', alignItems:'center', gap:4 }}><span style={{fontSize:14}}>+</span> Add Banks</button>
           <span style={{ fontSize:11, color:'#3A4558' }}>{banks.length} with products</span>
         </div>
-        {selBanks.length>=2 && <button onClick={()=>setShowTable(!showTable)} style={{ padding:'8px 18px', borderRadius:100, border:'none', cursor:'pointer', background:showTable?'#2A3448':'linear-gradient(135deg,#F0C850,#D4A830)', color:showTable?'#8A96A8':'#0B1120', fontFamily:"'Outfit',sans-serif", fontWeight:700, fontSize:12, boxShadow:showTable?'none':'0 3px 12px rgba(240,200,80,0.2)' }}>{showTable?'← Cards':`Compare ${selBanks.length} →`}</button>}
+        {selBanks.length>=2 && <button onClick={()=>setShowTable(!showTable)} style={{ padding:'8px 18px', borderRadius:100, border:'none', cursor:'pointer', background:showTable?'#2A3448':'linear-gradient(135deg,#F0C850,#D4A830)', color:showTable?'#8A96A8':'#0B1120', fontFamily:"'Outfit',sans-serif", fontWeight:700, fontSize:12, boxShadow:showTable?'none':'0 3px 12px rgba(240,200,80,0.2)' }}>{showTable ? '\u2190 Cards' : `Compare ${selBanks.length} \u2192`}</button>}
       </div>
       {showTable && selBanks.length>=2 ? (
         <div style={{ background:'rgba(255,255,255,0.025)', borderRadius:13, overflow:'hidden', border:'1px solid rgba(255,255,255,0.05)' }}>
@@ -255,7 +256,7 @@ function CompareTab({ activeBankIds, onOpenDrawer }) {
                 <th style={{ padding:'13px 13px', textAlign:'left', background:'#0F1A2E', color:'#F0C850', fontWeight:600, fontSize:10.5, letterSpacing:'0.06em', textTransform:'uppercase', position:'sticky', left:0, zIndex:2 }}>Feature</th>
                 {selBanks.map(b=><th key={b.id} style={{ padding:'11px 8px', textAlign:'center', background:'#0F1A2E', color:'#C0C8D4', fontWeight:600, fontSize:10.5 }}><div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:4}}><Badge bank={b} size={24}/><span style={{maxWidth:72,lineHeight:1.2}}>{b.name}</span></div></th>)}
               </tr></thead>
-              <tbody>{prod.fields.map((f,fi)=><tr key={f}><td style={{ padding:'10px 13px', fontWeight:600, fontSize:11, color:'#A0A8B4', borderBottom:'1px solid rgba(255,255,255,0.025)', background:'#0B1120', position:'sticky', left:0, zIndex:1 }}>{f}</td>{selBanks.map(b=><td key={b.id} style={{ padding:'10px 8px', textAlign:'center', fontSize:11, fontWeight:500, color:'#C0C8D4', borderBottom:'1px solid rgba(255,255,255,0.025)', background:fi%2===0?'rgba(255,255,255,0.012)':'transparent' }}>{prod.data[b.id]?.[fi]||'—'}</td>)}</tr>)}</tbody>
+              <tbody>{prod.fields.map((f,fi)=><tr key={f}><td style={{ padding:'10px 13px', fontWeight:600, fontSize:11, color:'#A0A8B4', borderBottom:'1px solid rgba(255,255,255,0.025)', background:'#0B1120', position:'sticky', left:0, zIndex:1 }}>{f}</td>{selBanks.map(b=><td key={b.id} style={{ padding:'10px 8px', textAlign:'center', fontSize:11, fontWeight:500, color:'#C0C8D4', borderBottom:'1px solid rgba(255,255,255,0.025)', background:fi%2===0?'rgba(255,255,255,0.012)':'transparent' }}>{prod.data[b.id]?.[fi] || '\u2014'}</td>)}</tr>)}</tbody>
             </table>
           </div>
         </div>
@@ -263,14 +264,14 @@ function CompareTab({ activeBankIds, onOpenDrawer }) {
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(245px,1fr))', gap:9 }}>
           {banks.map((bank,i)=>{const sel=selected.includes(bank.id);return(
             <div key={bank.id} onClick={()=>toggle(bank.id)} style={{ background:sel?`${bank.color}10`:'rgba(255,255,255,0.02)', border:sel?`2px solid ${bank.color}48`:'2px solid rgba(255,255,255,0.035)', borderRadius:12, padding:13, cursor:'pointer', transition:'all 0.25s', position:'relative', animation:`fadeUp 0.3s ease ${i*0.03}s both` }}>
-              {sel&&<div style={{position:'absolute',top:8,right:8,width:19,height:19,borderRadius:'50%',background:bank.color,display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontSize:10.5,fontWeight:700}}>✓</div>}
+              {sel&&<div style={{position:'absolute',top:8,right:8,width:19,height:19,borderRadius:'50%',background:bank.color,display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontSize:10.5,fontWeight:700}}>{'\u2713'}</div>}
               <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:11}}><Badge bank={bank} size={32}/><div><div style={{fontFamily:"'Fraunces',serif",fontSize:13.5,fontWeight:700,color:'#E0E6ED'}}>{bank.name}</div><div style={{fontSize:10,color:'#4A5568'}}>{bank.type}</div></div></div>
-              {prod.fields.map((f,fi)=><div key={f} style={{display:'flex',justifyContent:'space-between',padding:'3.5px 0',borderBottom:fi<prod.fields.length-1?'1px solid rgba(255,255,255,0.025)':'none'}}><span style={{fontSize:10.5,color:'#4A5568'}}>{f}</span><span style={{fontSize:11,color:'#A0A8B4',fontWeight:600}}>{prod.data[bank.id]?.[fi]||'—'}</span></div>)}
+              {prod.fields.map((f,fi)=><div key={f} style={{display:'flex',justifyContent:'space-between',padding:'3.5px 0',borderBottom:fi<prod.fields.length-1?'1px solid rgba(255,255,255,0.025)':'none'}}><span style={{fontSize:10.5,color:'#4A5568'}}>{f}</span><span style={{fontSize:11,color:'#A0A8B4',fontWeight:600}}>{prod.data[bank.id]?.[fi] || '\u2014'}</span></div>)}
             </div>
           )})}
         </div>
       )}
-      <p style={{marginTop:12,fontSize:10,color:'#2D3A4E',fontStyle:'italic'}}>* Islamic banks offer profit rates (Murabaha/Ijarah). All rates indicative — verify with your bank.</p>
+      <p style={{marginTop:12,fontSize:10,color:'#2D3A4E',fontStyle:'italic'}}>* Islamic banks offer profit rates (Murabaha/Ijarah). All rates indicative.</p>
     </div>
   )
 }
@@ -284,8 +285,11 @@ function ProfitTab({ activeBankIds, onOpenDrawer }) {
   return (
     <div>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:16}}>
-        <div><h3 style={{fontFamily:"'Fraunces',serif",fontSize:16,fontWeight:700,color:'#F0C850',marginBottom:2}}>FY 2025 Net Profit</h3><p style={{fontSize:11,color:'#4A5568'}}>AED (after tax) · {banks.length} banks with data</p></div>
-        <button onClick={onOpenDrawer} style={{padding:'7px 12px',borderRadius:8,border:'1px dashed rgba(240,200,80,0.3)',background:'rgba(240,200,80,0.04)',color:'#F0C850',cursor:'pointer',fontFamily:"'Outfit',sans-serif",fontWeight:600,fontSize:11}}>＋ Banks</button>
+        <div>
+          <h3 style={{fontFamily:"'Fraunces',serif",fontSize:16,fontWeight:700,color:'#F0C850',marginBottom:2}}>FY 2025 Net Profit</h3>
+          <p style={{fontSize:11,color:'#4A5568'}}>AED (after tax) &middot; {banks.length} banks with data</p>
+        </div>
+        <button onClick={onOpenDrawer} style={{padding:'7px 12px',borderRadius:8,border:'1px dashed rgba(240,200,80,0.3)',background:'rgba(240,200,80,0.04)',color:'#F0C850',cursor:'pointer',fontFamily:"'Outfit',sans-serif",fontWeight:600,fontSize:11}}>+ Banks</button>
       </div>
       <div style={{display:'flex',gap:5,marginBottom:14,overflowX:'auto'}}>
         {[{key:'profit',label:'Net Profit'},{key:'growth',label:'YoY %'},{key:'assets',label:'Assets'},{key:'roe',label:'ROE'}].map(s=><button key={s.key} onClick={()=>setSortBy(s.key)} style={{padding:'6px 11px',borderRadius:6,border:'none',cursor:'pointer',whiteSpace:'nowrap',background:sortBy===s.key?'#F0C850':'rgba(255,255,255,0.04)',color:sortBy===s.key?'#0B1120':'#6B7A8D',fontFamily:"'Outfit',sans-serif",fontWeight:600,fontSize:11}}>{s.label}</button>)}
@@ -296,8 +300,14 @@ function ProfitTab({ activeBankIds, onOpenDrawer }) {
             <div style={{display:'flex',alignItems:'center',gap:9,marginBottom:7}}>
               <div style={{width:20,height:20,borderRadius:5,background:'rgba(240,200,80,0.08)',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,fontSize:10.5,color:'#F0C850'}}>{i+1}</div>
               <Badge bank={bank} size={28}/>
-              <div style={{flex:1}}><div style={{fontFamily:"'Fraunces',serif",fontSize:12.5,fontWeight:700,color:'#E0E6ED'}}>{bank.name}</div><div style={{fontSize:10,color:'#4A5568'}}>{bank.type} · {bank.hq} · {bank.exchange}</div></div>
-              <div style={{textAlign:'right'}}><div style={{fontFamily:"'Outfit',sans-serif",fontSize:16,fontWeight:800,color:'#F0C850'}}>{fmtProfit(bank.profit2025)}</div><div style={{fontSize:10,fontWeight:700,color:bank.yoyGrowth>=0?'#4ADE80':'#F87171'}}>{bank.yoyGrowth>=0?'▲':'▼'} {Math.abs(bank.yoyGrowth)}%</div></div>
+              <div style={{flex:1}}>
+                <div style={{fontFamily:"'Fraunces',serif",fontSize:12.5,fontWeight:700,color:'#E0E6ED'}}>{bank.name}</div>
+                <div style={{fontSize:10,color:'#4A5568'}}>{bank.type} &middot; {bank.hq} &middot; {bank.exchange}</div>
+              </div>
+              <div style={{textAlign:'right'}}>
+                <div style={{fontFamily:"'Outfit',sans-serif",fontSize:16,fontWeight:800,color:'#F0C850'}}>{fmtProfit(bank.profit2025)}</div>
+                <div style={{fontSize:10,fontWeight:700,color:bank.yoyGrowth>=0?'#4ADE80':'#F87171'}}>{bank.yoyGrowth>=0?'\u25B2':'\u25BC'} {Math.abs(bank.yoyGrowth)}%</div>
+              </div>
             </div>
             <div style={{height:4,background:'rgba(255,255,255,0.025)',borderRadius:2,overflow:'hidden'}}><div style={{height:'100%',borderRadius:2,width:`${Math.max(2,(bank.profit2025/maxP)*100)}%`,background:`linear-gradient(90deg,${bank.color},${bank.color}66)`,transition:'width 0.5s'}}/></div>
             <div style={{display:'flex',gap:12,marginTop:7,flexWrap:'wrap'}}>
@@ -308,7 +318,11 @@ function ProfitTab({ activeBankIds, onOpenDrawer }) {
           </div>
         ))}
       </div>
-      <div style={{marginTop:16,padding:12,background:'rgba(240,200,80,0.04)',borderRadius:9,borderLeft:'3px solid #F0C850'}}><p style={{fontSize:10,color:'#6B7A8D',lineHeight:1.7}}><b style={{color:'#F0C850'}}>Sources:</b> Bank annual reports, ADX/DFM filings, AGBI, Khaleej Times, The National, Zawya (Jan–Mar 2026). Foreign bank UAE-specific profits not separately reported.</p></div>
+      <div style={{marginTop:16,padding:12,background:'rgba(240,200,80,0.04)',borderRadius:9,borderLeft:'3px solid #F0C850'}}>
+        <p style={{fontSize:10,color:'#6B7A8D',lineHeight:1.7}}>
+          <b style={{color:'#F0C850'}}>Sources:</b> Bank annual reports, ADX/DFM filings, AGBI, Khaleej Times, The National, Zawya (Jan-Mar 2026). Foreign bank UAE-specific profits not separately reported.
+        </p>
+      </div>
     </div>
   )
 }
@@ -325,8 +339,8 @@ function NewsTab() {
       const data = await res.json()
       const text = data.content?.filter(c=>c.type==='text').map(c=>c.text).join('').replace(/```json|```/g,'').trim()
       if(text) setNews(JSON.parse(text)); else throw new Error('empty')
-    } catch {
-      setError('Live news unavailable — showing cached headlines.')
+    } catch(err) {
+      setError('Live news unavailable. Showing cached headlines.')
       setNews([
         {title:'Emirates NBD delivers record AED 29.8B profit before tax for FY 2025',source:'Emirates NBD',date:'Jan 2026',summary:'Total assets exceeded AED 1 trillion with record lending growth of AED 129B.',category:'Banking'},
         {title:'FAB posts 24% surge in net profit to AED 21.1 billion',source:'The National',date:'Jan 28, 2026',summary:'Highest cash dividend in FAB history at 80 fils per share.',category:'Banking'},
@@ -343,8 +357,11 @@ function NewsTab() {
   return (
     <div>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
-        <div><h3 style={{fontFamily:"'Fraunces',serif",fontSize:16,fontWeight:700,color:'#F0C850',marginBottom:2}}>UAE Banking News</h3><p style={{fontSize:11,color:'#4A5568'}}>Latest headlines &amp; earnings</p></div>
-        <button onClick={fetchNews} disabled={loading} style={{padding:'6px 12px',borderRadius:6,border:'none',cursor:loading?'default':'pointer',background:loading?'#1A2438':'rgba(240,200,80,0.08)',color:'#F0C850',fontFamily:"'Outfit',sans-serif",fontWeight:600,fontSize:11,opacity:loading?0.5:1}}>{loading?'Loading...':'↻ Refresh'}</button>
+        <div>
+          <h3 style={{fontFamily:"'Fraunces',serif",fontSize:16,fontWeight:700,color:'#F0C850',marginBottom:2}}>UAE Banking News</h3>
+          <p style={{fontSize:11,color:'#4A5568'}}>Latest headlines {"&"} earnings</p>
+        </div>
+        <button onClick={fetchNews} disabled={loading} style={{padding:'6px 12px',borderRadius:6,border:'none',cursor:loading?'default':'pointer',background:loading?'#1A2438':'rgba(240,200,80,0.08)',color:'#F0C850',fontFamily:"'Outfit',sans-serif",fontWeight:600,fontSize:11,opacity:loading?0.5:1}}>{loading?'Loading...':'\u21BB Refresh'}</button>
       </div>
       {error&&<div style={{padding:'8px 11px',background:'rgba(245,158,11,0.06)',borderRadius:8,border:'1px solid rgba(245,158,11,0.1)',marginBottom:12,fontSize:11,color:'#F59E0B'}}>{error}</div>}
       {loading?<div style={{display:'flex',flexDirection:'column',gap:7}}>{[...Array(5)].map((_,i)=><div key={i} style={{height:80,borderRadius:12,background:'rgba(255,255,255,0.02)',animation:`shimmer 1.5s ease ${i*0.1}s infinite alternate`}}/>)}</div>:(
@@ -375,30 +392,33 @@ function DirectoryTab({ activeBankIds, onOpenDrawer }) {
     return mQ && mF
   })
   const grouped = {}
-  banks.forEach(b => { const cat = CATEGORY_LABELS[b.category] || b.category; if(!grouped[cat]) grouped[cat]=[]; grouped[cat].push(b) })
+  banks.forEach(b => { const c = CATEGORY_LABELS[b.category] || b.category; if(!grouped[c]) grouped[c]=[]; grouped[c].push(b) })
 
   return (
     <div>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:14}}>
-        <div><h3 style={{fontFamily:"'Fraunces',serif",fontSize:16,fontWeight:700,color:'#F0C850',marginBottom:2}}>Bank Directory</h3><p style={{fontSize:11,color:'#4A5568'}}>All {ALL_BANKS.length} CBUAE-licensed banks</p></div>
+        <div>
+          <h3 style={{fontFamily:"'Fraunces',serif",fontSize:16,fontWeight:700,color:'#F0C850',marginBottom:2}}>Bank Directory</h3>
+          <p style={{fontSize:11,color:'#4A5568'}}>All {ALL_BANKS.length} CBUAE-licensed banks</p>
+        </div>
       </div>
       <div style={{position:'relative',marginBottom:10}}>
-        <span style={{position:'absolute',left:11,top:'50%',transform:'translateY(-50%)',fontSize:14,color:'#4A5568'}}>🔍</span>
+        <span style={{position:'absolute',left:11,top:'50%',transform:'translateY(-50%)',fontSize:14,color:'#4A5568'}}>&#x1F50D;</span>
         <input type="text" placeholder="Search banks..." value={q} onChange={e=>setQ(e.target.value)} style={{width:'100%',padding:'10px 12px 10px 34px',borderRadius:9,border:'1px solid rgba(255,255,255,0.07)',background:'rgba(255,255,255,0.03)',fontFamily:"'Outfit',sans-serif",fontSize:12.5,color:'#E0E6ED',outline:'none'}}/>
       </div>
       <div style={{display:'flex',gap:4,marginBottom:14,overflowX:'auto'}}>
         {CATEGORY_FILTERS.map(f=><button key={f.key} onClick={()=>setFilter(f.key)} style={{padding:'5px 10px',borderRadius:6,border:'none',cursor:'pointer',whiteSpace:'nowrap',background:filter===f.key?'rgba(240,200,80,0.15)':'rgba(255,255,255,0.04)',color:filter===f.key?'#F0C850':'#5A6878',fontFamily:"'Outfit',sans-serif",fontWeight:600,fontSize:10.5}}>{f.label}</button>)}
       </div>
-      {Object.entries(grouped).map(([cat, list]) => (
-        <div key={cat} style={{marginBottom:18}}>
-          <div style={{fontSize:11,fontWeight:700,color:'#F0C850',textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:8,paddingBottom:4,borderBottom:'1px solid rgba(240,200,80,0.15)'}}>{cat} ({list.length})</div>
+      {Object.entries(grouped).map(([catName, list]) => (
+        <div key={catName} style={{marginBottom:18}}>
+          <div style={{fontSize:11,fontWeight:700,color:'#F0C850',textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:8,paddingBottom:4,borderBottom:'1px solid rgba(240,200,80,0.15)'}}>{catName} ({list.length})</div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))',gap:6}}>
             {list.map(bank=>(
               <div key={bank.id} style={{display:'flex',alignItems:'center',gap:8,padding:'8px 10px',borderRadius:8,background:'rgba(255,255,255,0.015)',border:'1px solid rgba(255,255,255,0.025)'}}>
                 <Badge bank={bank} size={26}/>
                 <div style={{flex:1}}>
                   <div style={{fontSize:11.5,fontWeight:600,color:'#E0E6ED'}}>{bank.name}</div>
-                  <div style={{fontSize:9.5,color:'#4A5568'}}>{bank.hq} · Est. {bank.est} · {bank.exchange}</div>
+                  <div style={{fontSize:9.5,color:'#4A5568'}}>{bank.hq} &middot; Est. {bank.est} &middot; {bank.exchange}</div>
                 </div>
                 {bank.profit2025>0&&<div style={{fontSize:10,fontWeight:700,color:'#F0C850'}}>{fmtProfit(bank.profit2025)}</div>}
               </div>
@@ -406,7 +426,11 @@ function DirectoryTab({ activeBankIds, onOpenDrawer }) {
           </div>
         </div>
       ))}
-      <div style={{padding:12,background:'rgba(240,200,80,0.04)',borderRadius:9,borderLeft:'3px solid #F0C850'}}><p style={{fontSize:10,color:'#6B7A8D',lineHeight:1.7}}><b style={{color:'#F0C850'}}>Source:</b> CBUAE Register (June 2025). Includes all nationally licensed and foreign banks with retail/wholesale licences in the UAE.</p></div>
+      <div style={{padding:12,background:'rgba(240,200,80,0.04)',borderRadius:9,borderLeft:'3px solid #F0C850'}}>
+        <p style={{fontSize:10,color:'#6B7A8D',lineHeight:1.7}}>
+          <b style={{color:'#F0C850'}}>Source:</b> CBUAE Register (June 2025). All nationally licensed and foreign banks with retail/wholesale licences in the UAE.
+        </p>
+      </div>
     </div>
   )
 }
@@ -416,7 +440,7 @@ export default function BankingHub() {
   const [activeBankIds, setActiveBankIds] = useState(()=>ALL_BANKS.filter(b=>b.featured).map(b=>b.id))
   const [drawerOpen, setDrawerOpen] = useState(false)
   const toggleBank = id => setActiveBankIds(p=>p.includes(id)?p.filter(x=>x!==id):[...p,id])
-  const tabs = [{key:'profit',label:'Profits',icon:'📊'},{key:'directory',label:'Directory',icon:'🏛️'},{key:'news',label:'News',icon:'📰'},{key:'compare',label:'Compare',icon:'⚖️'}]
+  const tabs = [{key:'profit',label:'Profits',icon:'\uD83D\uDCCA'},{key:'directory',label:'Directory',icon:'\uD83C\uDFDB\uFE0F'},{key:'news',label:'News',icon:'\uD83D\uDCF0'},{key:'compare',label:'Compare',icon:'\u2696\uFE0F'}]
 
   return (
     <div style={{minHeight:'100vh',background:'linear-gradient(180deg,#080E1A 0%,#0B1120 40%,#0E1528 100%)',fontFamily:"'Outfit',sans-serif",color:'#E0E6ED'}}>
@@ -434,7 +458,7 @@ export default function BankingHub() {
             Smart Banking<br/><span style={{color:'#F0C850'}}>Intelligence</span>
           </h1>
           <p style={{fontSize:12,color:'#4A5568',maxWidth:360,lineHeight:1.5}}>
-            Complete UAE banking directory — compare, track profits &amp; stay informed.
+            {"Complete UAE banking directory \u2014 compare, track profits & stay informed."}
           </p>
         </div>
       </div>
@@ -453,7 +477,7 @@ export default function BankingHub() {
       </div>
 
       <div style={{textAlign:'center',padding:'16px 12px',borderTop:'1px solid rgba(255,255,255,0.025)',fontSize:9.5,color:'#2D3A4E'}}>
-        CBUAE Register (June 2025) · FY 2025 bank filings · Data indicative — verify with your bank
+        {"CBUAE Register (June 2025) \u00B7 FY 2025 bank filings \u00B7 Data indicative \u2014 verify with your bank"}
       </div>
 
       <AddBankDrawer visible={drawerOpen} activeBankIds={activeBankIds} onToggle={toggleBank} onClose={()=>setDrawerOpen(false)}/>
