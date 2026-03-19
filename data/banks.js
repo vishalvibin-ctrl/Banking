@@ -14,11 +14,11 @@ export const ALL_BANKS = [
   { id:"nbf", name:"National Bank of Fujairah", color:"#00695C", type:"Conventional", category:"national", hq:"Fujairah", exchange:"ADX", est:1984, profit2025:1.2, profit2024:0.85, totalAssets:65, yoyGrowth:42, roe:14.0, featured:true, hasProducts:false },
   { id:"bos", name:"Bank of Sharjah", color:"#2E7D32", type:"Conventional", category:"national", hq:"Sharjah", exchange:"ADX", est:1973, profit2025:0.73, profit2024:0.39, totalAssets:40, yoyGrowth:89, roe:10.0, featured:true, hasProducts:false },
   { id:"cbi", name:"Commercial Bank International", color:"#5C6BC0", type:"Conventional", category:"national", hq:"Dubai", exchange:"ADX", est:1991, profit2025:0.30, profit2024:0.21, totalAssets:22, yoyGrowth:40, roe:12.0, featured:true, hasProducts:false },
-  { id:"uab", name:"United Arab Bank", color:"#6D4C41", type:"Conventional", category:"national", hq:"Sharjah", exchange:"ADX", est:1975, profit2025:0.28, profit2024:0.22, totalAssets:18, yoyGrowth:27, roe:8.0, featured:true, hasProducts:false },
-  { id:"investbank", name:"InvestBank", color:"#546E7A", type:"Conventional", category:"national", hq:"Sharjah", exchange:"Private", est:1975, profit2025:0.12, profit2024:0.10, totalAssets:12, yoyGrowth:20, roe:6.0, featured:true, hasProducts:false },
-  { id:"nbq", name:"National Bank of Umm Al Qaiwain", color:"#795548", type:"Conventional", category:"national", hq:"Umm Al Quwain", exchange:"ADX", est:1982, profit2025:0.18, profit2024:0.15, totalAssets:14, yoyGrowth:20, roe:7.0, featured:true, hasProducts:false },
-  { id:"abit", name:"Arab Bank for Inv. & Foreign Trade", color:"#37474F", type:"Conventional", category:"national", hq:"Abu Dhabi", exchange:"Private", est:1976, profit2025:0.10, profit2024:0.08, totalAssets:8, yoyGrowth:25, roe:0, featured:true, hasProducts:false },
-  { id:"eib", name:"Emirates Investment Bank", color:"#455A64", type:"Conventional", category:"national", hq:"Dubai", exchange:"Private", est:1976, profit2025:0.05, profit2024:0.04, totalAssets:4, yoyGrowth:25, roe:0, featured:true, hasProducts:false },
+  { id:"uab", name:"United Arab Bank", color:"#6D4C41", type:"Conventional", category:"national", hq:"Sharjah", exchange:"ADX", est:1975, profit2025:0.42, profit2024:0.28, totalAssets:26, yoyGrowth:49, roe:15.6, featured:true, hasProducts:false },
+  { id:"investbank", name:"InvestBank", color:"#546E7A", type:"Conventional", category:"national", hq:"Sharjah", exchange:"Private", est:1975, profit2025:0.12, profit2024:0.10, totalAssets:12, yoyGrowth:20, roe:0, featured:true, hasProducts:false, note:"Est." },
+  { id:"nbq", name:"National Bank of Umm Al Qaiwain", color:"#795548", type:"Conventional", category:"national", hq:"Umm Al Quwain", exchange:"ADX", est:1982, profit2025:0.62, profit2024:0.53, totalAssets:23, yoyGrowth:17, roe:10.0, featured:true, hasProducts:false },
+  { id:"abit", name:"Arab Bank for Inv. & Foreign Trade", color:"#37474F", type:"Conventional", category:"national", hq:"Abu Dhabi", exchange:"Private", est:1976, profit2025:0.10, profit2024:0.08, totalAssets:8, yoyGrowth:25, roe:0, featured:true, hasProducts:false, note:"Est." },
+  { id:"eib", name:"Emirates Investment Bank", color:"#455A64", type:"Conventional", category:"national", hq:"Dubai", exchange:"Private", est:1976, profit2025:0.05, profit2024:0.04, totalAssets:4, yoyGrowth:25, roe:0, featured:true, hasProducts:false, note:"Est." },
 
   // ═══════════════════════════════════════════════════════════════════════════
   // NATIONAL BANKS — ISLAMIC
@@ -28,13 +28,13 @@ export const ALL_BANKS = [
   { id:"ei", name:"Emirates Islamic", color:"#00838F", type:"Islamic", category:"national", hq:"Dubai", exchange:"ENBD subsidiary", est:1976, profit2025:3.4, profit2024:2.9, totalAssets:100, yoyGrowth:17, roe:22.0, featured:true, hasProducts:false },
   { id:"sib", name:"Sharjah Islamic Bank", color:"#4E342E", type:"Islamic", category:"national", hq:"Sharjah", exchange:"ADX", est:1975, profit2025:1.32, profit2024:1.05, totalAssets:90, yoyGrowth:26, roe:17.0, featured:true, hasProducts:false },
   { id:"ajman", name:"Ajman Bank", color:"#C75B12", type:"Islamic", category:"national", hq:"Ajman", exchange:"DFM", est:2008, profit2025:0.50, profit2024:0.40, totalAssets:32.9, yoyGrowth:25, roe:15.6, featured:true, hasProducts:true },
-  { id:"alhilal", name:"Al Hilal Bank", color:"#8B6914", type:"Islamic", category:"national", hq:"Abu Dhabi", exchange:"ADCB subsidiary", est:2007, profit2025:0.15, profit2024:0.13, totalAssets:45, yoyGrowth:15, roe:0, featured:true, hasProducts:true },
+  { id:"alhilal", name:"Al Hilal Bank", color:"#8B6914", type:"Islamic", category:"national", hq:"Abu Dhabi", exchange:"ADCB subsidiary", est:2007, profit2025:-0.12, profit2024:-0.12, totalAssets:13.6, yoyGrowth:0, roe:0, featured:true, hasProducts:true, note:"Loss-making" },
 
   // ═══════════════════════════════════════════════════════════════════════════
   // DIGITAL BANKS
   // ═══════════════════════════════════════════════════════════════════════════
   { id:"wio", name:"Wio Bank", color:"#FF6B00", type:"Digital", category:"digital", hq:"Abu Dhabi", exchange:"Private", est:2022, profit2025:0.62, profit2024:0.40, totalAssets:61, yoyGrowth:57, roe:0, featured:true, hasProducts:false },
-  { id:"zand", name:"Zand Bank", color:"#FF4081", type:"Digital", category:"digital", hq:"Dubai", exchange:"Private", est:2022, profit2025:0.0, profit2024:0.0, totalAssets:5, yoyGrowth:0, roe:0, featured:true, hasProducts:false },
+  { id:"zand", name:"Zand Bank", color:"#FF4081", type:"Digital", category:"digital", hq:"Dubai", exchange:"Private", est:2022, profit2025:0, profit2024:0, totalAssets:5, yoyGrowth:0, roe:0, featured:true, hasProducts:false },
 
   // ═══════════════════════════════════════════════════════════════════════════
   // FOREIGN BANKS — RETAIL (operating branches in UAE)
@@ -166,6 +166,7 @@ export const CATEGORY_FILTERS = [
 ];
 
 export const fmtProfit = (v) => {
-  if (v <= 0) return "—";
+  if (v === 0) return "—";
+  if (v < 0) { const abs = Math.abs(v); return abs >= 1 ? `(AED ${abs.toFixed(1)}B)` : `(AED ${(abs * 1000).toFixed(0)}M)`; }
   return v >= 1 ? `AED ${v.toFixed(1)}B` : `AED ${(v * 1000).toFixed(0)}M`;
 };
