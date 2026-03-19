@@ -107,51 +107,111 @@ function CompareTab({ activeBankIds, onOpenDrawer }) {
 }
 
 function ProfitTab({ activeBankIds, onOpenDrawer }) {
+  const [view, setView] = useState('profit')
   const [sortBy, setSortBy] = useState('profit')
-  const banks = ALL_BANKS.filter(b => activeBankIds.includes(b.id) && (b.profit2025 !== 0 || b.note))
-  const sorted = [...banks].sort((a,b)=>sortBy==='profit'?b.profit2025-a.profit2025:sortBy==='growth'?b.yoyGrowth-a.yoyGrowth:sortBy==='assets'?b.totalAssets-a.totalAssets:b.roe-a.roe)
-  const maxP = Math.max(...banks.map(b=>b.profit2025), 1)
+  const [nplSort, setNplSort] = useState('npl')
+  const allBanks = ALL_BANKS.filter(b => activeBankIds.includes(b.id) && (b.profit2025 !== 0 || b.note))
+  const sorted = [...allBanks].sort((a,b)=>sortBy==='profit'?b.profit2025-a.profit2025:sortBy==='growth'?b.yoyGrowth-a.yoyGrowth:sortBy==='assets'?b.totalAssets-a.totalAssets:b.roe-a.roe)
+  const maxP = Math.max(...allBanks.map(b=>b.profit2025), 1)
+
+  const nplBanks = ALL_BANKS.filter(b => activeBankIds.includes(b.id) && b.nplRatio > 0)
+  const nplSorted = [...nplBanks].sort((a,b)=>nplSort==='npl'?b.nplRatio-a.nplRatio:nplSort==='nplAmt'?(b.grossLoans*b.nplRatio/100)-(a.grossLoans*a.nplRatio/100):b.grossLoans-a.grossLoans)
 
   return (
     <div>
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:16}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:12}}>
         <div>
-          <h3 style={{fontFamily:"'Fraunces',serif",fontSize:16,fontWeight:700,color:'#F0C850',marginBottom:2}}>FY 2025 Net Profit</h3>
-          <p style={{fontSize:11,color:'#4A5568'}}>AED (after tax) &middot; {banks.length} banks with data</p>
+          <h3 style={{fontFamily:"'Fraunces',serif",fontSize:16,fontWeight:700,color:'#F0C850',marginBottom:2}}>Financial Performance</h3>
+          <p style={{fontSize:11,color:'#4A5568'}}>FY 2025 &middot; {allBanks.length} banks</p>
         </div>
         <button onClick={onOpenDrawer} style={{padding:'7px 12px',borderRadius:8,border:'1px dashed rgba(240,200,80,0.3)',background:'rgba(240,200,80,0.04)',color:'#F0C850',cursor:'pointer',fontFamily:"'Outfit',sans-serif",fontWeight:600,fontSize:11}}>+ Banks</button>
       </div>
-      <div style={{display:'flex',gap:5,marginBottom:14,overflowX:'auto'}}>
-        {[{key:'profit',label:'Net Profit'},{key:'growth',label:'YoY %'},{key:'assets',label:'Assets'},{key:'roe',label:'ROE'}].map(s=><button key={s.key} onClick={()=>setSortBy(s.key)} style={{padding:'6px 11px',borderRadius:6,border:'none',cursor:'pointer',whiteSpace:'nowrap',background:sortBy===s.key?'#F0C850':'rgba(255,255,255,0.04)',color:sortBy===s.key?'#0B1120':'#6B7A8D',fontFamily:"'Outfit',sans-serif",fontWeight:600,fontSize:11}}>{s.label}</button>)}
+
+      <div style={{display:'flex',gap:5,marginBottom:14,background:'rgba(255,255,255,0.035)',borderRadius:100,padding:3,border:'1px solid rgba(255,255,255,0.05)'}}>
+        <button onClick={()=>setView('profit')} style={{flex:1,padding:'8px 0',border:'none',borderRadius:100,cursor:'pointer',background:view==='profit'?'#F0C850':'transparent',color:view==='profit'?'#0B1120':'#6B7A8D',fontFamily:"'Outfit',sans-serif",fontWeight:view==='profit'?700:500,fontSize:12}}>Profit / Loss</button>
+        <button onClick={()=>setView('npl')} style={{flex:1,padding:'8px 0',border:'none',borderRadius:100,cursor:'pointer',background:view==='npl'?'#F87171':'transparent',color:view==='npl'?'#fff':'#6B7A8D',fontFamily:"'Outfit',sans-serif",fontWeight:view==='npl'?700:500,fontSize:12}}>NPL Analysis</button>
       </div>
-      <div style={{display:'flex',flexDirection:'column',gap:7}}>
-        {sorted.map((bank,i)=>(
-          <div key={bank.id} style={{background:'rgba(255,255,255,0.02)',borderRadius:12,padding:'11px 13px',border:'1px solid rgba(255,255,255,0.035)',animation:`fadeUp 0.3s ease ${i*0.025}s both`}}>
-            <div style={{display:'flex',alignItems:'center',gap:9,marginBottom:7}}>
-              <div style={{width:20,height:20,borderRadius:5,background:'rgba(240,200,80,0.08)',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,fontSize:10.5,color:'#F0C850'}}>{i+1}</div>
-              <Badge bank={bank} size={28}/>
-              <div style={{flex:1}}>
-                <div style={{fontFamily:"'Fraunces',serif",fontSize:12.5,fontWeight:700,color:'#E0E6ED'}}>{bank.name}</div>
-                <div style={{fontSize:10,color:'#4A5568'}}>{bank.type} &middot; {bank.hq} &middot; {bank.exchange}</div>
-              </div>
-              <div style={{textAlign:'right'}}>
-                <div style={{fontFamily:"'Outfit',sans-serif",fontSize:16,fontWeight:800,color:bank.profit2025<0?'#F87171':'#F0C850'}}>{fmtProfit(bank.profit2025)}</div>
-                {bank.profit2025!==0&&<div style={{fontSize:10,fontWeight:700,color:bank.yoyGrowth>=0?'#4ADE80':'#F87171'}}>{bank.yoyGrowth>=0?'\u25B2':'\u25BC'} {Math.abs(bank.yoyGrowth)}%</div>}
-              </div>
-            </div>
-            {bank.profit2025>0&&<div style={{height:4,background:'rgba(255,255,255,0.025)',borderRadius:2,overflow:'hidden'}}><div style={{height:'100%',borderRadius:2,width:`${Math.max(2,(bank.profit2025/maxP)*100)}%`,background:`linear-gradient(90deg,${bank.color},${bank.color}66)`,transition:'width 0.5s'}}/></div>}
-            <div style={{display:'flex',gap:12,marginTop:7,flexWrap:'wrap'}}>
-              <span style={{fontSize:10,color:'#4A5568'}}>Assets: <b style={{color:'#A0A8B4'}}>AED {bank.totalAssets}B</b></span>
-              {bank.roe>0&&<span style={{fontSize:10,color:'#4A5568'}}>ROE: <b style={{color:'#A0A8B4'}}>{bank.roe}%</b></span>}
-              {bank.profit2024!==0&&<span style={{fontSize:10,color:'#4A5568'}}>FY24: <b style={{color:bank.profit2024<0?'#F87171':'#A0A8B4'}}>{fmtProfit(bank.profit2024)}</b></span>}
-              {bank.note&&<span style={{fontSize:10,color:bank.profit2025<0?'#F87171':'#6B7A8D',fontWeight:600}}>{bank.profit2025<0?'Net loss — ADCB subsidiary':bank.note}</span>}
-            </div>
+
+      {view==='profit'?(
+        <div>
+          <div style={{display:'flex',gap:5,marginBottom:14,overflowX:'auto'}}>
+            {[{key:'profit',label:'Net Profit'},{key:'growth',label:'YoY %'},{key:'assets',label:'Assets'},{key:'roe',label:'ROE'}].map(s=><button key={s.key} onClick={()=>setSortBy(s.key)} style={{padding:'6px 11px',borderRadius:6,border:'none',cursor:'pointer',whiteSpace:'nowrap',background:sortBy===s.key?'#F0C850':'rgba(255,255,255,0.04)',color:sortBy===s.key?'#0B1120':'#6B7A8D',fontFamily:"'Outfit',sans-serif",fontWeight:600,fontSize:11}}>{s.label}</button>)}
           </div>
-        ))}
-      </div>
+          <div style={{display:'flex',flexDirection:'column',gap:7}}>
+            {sorted.map((bank,i)=>(
+              <div key={bank.id} style={{background:bank.profit2025<0?'rgba(248,113,113,0.04)':'rgba(255,255,255,0.02)',borderRadius:12,padding:'11px 13px',border:bank.profit2025<0?'1px solid rgba(248,113,113,0.15)':'1px solid rgba(255,255,255,0.035)',animation:`fadeUp 0.3s ease ${i*0.025}s both`}}>
+                <div style={{display:'flex',alignItems:'center',gap:9,marginBottom:7}}>
+                  <div style={{width:20,height:20,borderRadius:5,background:bank.profit2025<0?'rgba(248,113,113,0.12)':'rgba(240,200,80,0.08)',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,fontSize:10.5,color:bank.profit2025<0?'#F87171':'#F0C850'}}>{i+1}</div>
+                  <Badge bank={bank} size={28}/>
+                  <div style={{flex:1}}>
+                    <div style={{fontFamily:"'Fraunces',serif",fontSize:12.5,fontWeight:700,color:'#E0E6ED'}}>{bank.name}</div>
+                    <div style={{fontSize:10,color:'#4A5568'}}>{bank.type} &middot; {bank.hq} &middot; {bank.exchange}</div>
+                  </div>
+                  <div style={{textAlign:'right'}}>
+                    <div style={{fontFamily:"'Outfit',sans-serif",fontSize:16,fontWeight:800,color:bank.profit2025<0?'#F87171':'#F0C850'}}>{fmtProfit(bank.profit2025)}</div>
+                    {bank.profit2025!==0&&<div style={{fontSize:10,fontWeight:700,color:bank.yoyGrowth>=0?'#4ADE80':'#F87171'}}>{bank.yoyGrowth>=0?'\u25B2':'\u25BC'} {Math.abs(bank.yoyGrowth)}%</div>}
+                  </div>
+                </div>
+                {bank.profit2025>0&&<div style={{height:4,background:'rgba(255,255,255,0.025)',borderRadius:2,overflow:'hidden'}}><div style={{height:'100%',borderRadius:2,width:`${Math.max(2,(bank.profit2025/maxP)*100)}%`,background:`linear-gradient(90deg,${bank.color},${bank.color}66)`,transition:'width 0.5s'}}/></div>}
+                <div style={{display:'flex',gap:12,marginTop:7,flexWrap:'wrap'}}>
+                  <span style={{fontSize:10,color:'#4A5568'}}>Assets: <b style={{color:'#A0A8B4'}}>AED {bank.totalAssets}B</b></span>
+                  {bank.roe>0&&<span style={{fontSize:10,color:'#4A5568'}}>ROE: <b style={{color:'#A0A8B4'}}>{bank.roe}%</b></span>}
+                  {bank.profit2024!==0&&<span style={{fontSize:10,color:'#4A5568'}}>FY24: <b style={{color:bank.profit2024<0?'#F87171':'#A0A8B4'}}>{fmtProfit(bank.profit2024)}</b></span>}
+                  {bank.note&&<span style={{fontSize:10,color:bank.profit2025<0?'#F87171':'#6B7A8D',fontWeight:600}}>{bank.profit2025<0?'Net loss \u2014 ADCB subsidiary':bank.note}</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ):(
+        <div>
+          <div style={{display:'flex',gap:5,marginBottom:14,overflowX:'auto'}}>
+            {[{key:'npl',label:'NPL % (High\u2192Low)'},{key:'nplAmt',label:'NPL Amount'},{key:'loans',label:'Gross Loans'}].map(s=><button key={s.key} onClick={()=>setNplSort(s.key)} style={{padding:'6px 11px',borderRadius:6,border:'none',cursor:'pointer',whiteSpace:'nowrap',background:nplSort===s.key?'#F87171':'rgba(255,255,255,0.04)',color:nplSort===s.key?'#fff':'#6B7A8D',fontFamily:"'Outfit',sans-serif",fontWeight:600,fontSize:11}}>{s.label}</button>)}
+          </div>
+          <div style={{display:'flex',flexDirection:'column',gap:7}}>
+            {nplSorted.map((bank,i)=>{
+              const nplAmt = (bank.grossLoans * bank.nplRatio / 100);
+              const nplChg = bank.nplPrior ? bank.nplRatio - bank.nplPrior : 0;
+              const maxNpl = Math.max(...nplBanks.map(b=>Math.max(b.nplRatio, b.nplPrior||0)));
+              return (
+              <div key={bank.id} style={{background:bank.nplRatio>5?'rgba(248,113,113,0.04)':bank.nplRatio>3?'rgba(245,158,11,0.04)':'rgba(255,255,255,0.02)',borderRadius:12,padding:'11px 13px',border:bank.nplRatio>5?'1px solid rgba(248,113,113,0.15)':bank.nplRatio>3?'1px solid rgba(245,158,11,0.12)':'1px solid rgba(255,255,255,0.035)',animation:`fadeUp 0.3s ease ${i*0.025}s both`}}>
+                <div style={{display:'flex',alignItems:'center',gap:9,marginBottom:7}}>
+                  <div style={{width:20,height:20,borderRadius:5,background:bank.nplRatio>5?'rgba(248,113,113,0.12)':bank.nplRatio>3?'rgba(245,158,11,0.12)':'rgba(74,222,128,0.12)',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,fontSize:10.5,color:bank.nplRatio>5?'#F87171':bank.nplRatio>3?'#F59E0B':'#4ADE80'}}>{i+1}</div>
+                  <Badge bank={bank} size={28}/>
+                  <div style={{flex:1}}>
+                    <div style={{fontFamily:"'Fraunces',serif",fontSize:12.5,fontWeight:700,color:'#E0E6ED'}}>{bank.name}</div>
+                    <div style={{fontSize:10,color:'#4A5568'}}>{bank.type} &middot; {bank.hq}</div>
+                  </div>
+                  <div style={{textAlign:'right'}}>
+                    <div style={{fontFamily:"'Outfit',sans-serif",fontSize:18,fontWeight:800,color:bank.nplRatio>5?'#F87171':bank.nplRatio>3?'#F59E0B':'#4ADE80'}}>{bank.nplRatio}%</div>
+                    {bank.nplPrior>0&&<div style={{fontSize:10,fontWeight:700,color:nplChg<0?'#4ADE80':'#F87171'}}>{nplChg<0?'\u25BC':nplChg>0?'\u25B2':'\u25CF'} {Math.abs(nplChg).toFixed(1)}pp vs FY24</div>}
+                  </div>
+                </div>
+                <div style={{display:'flex',gap:4,marginBottom:7}}>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:9,color:'#4A5568',marginBottom:2}}>FY2025</div>
+                    <div style={{height:4,background:'rgba(255,255,255,0.025)',borderRadius:2,overflow:'hidden'}}><div style={{height:'100%',borderRadius:2,width:`${Math.max(2,(bank.nplRatio/maxNpl)*100)}%`,background:bank.nplRatio>5?'#F87171':bank.nplRatio>3?'#F59E0B':'#4ADE80',transition:'width 0.5s'}}/></div>
+                  </div>
+                  {bank.nplPrior>0&&<div style={{flex:1}}>
+                    <div style={{fontSize:9,color:'#4A5568',marginBottom:2}}>FY2024</div>
+                    <div style={{height:4,background:'rgba(255,255,255,0.025)',borderRadius:2,overflow:'hidden'}}><div style={{height:'100%',borderRadius:2,width:`${Math.max(2,(bank.nplPrior/maxNpl)*100)}%`,background:'rgba(255,255,255,0.15)',transition:'width 0.5s'}}/></div>
+                  </div>}
+                </div>
+                <div style={{display:'flex',gap:10,flexWrap:'wrap'}}>
+                  <span style={{fontSize:10,color:'#4A5568'}}>NPL Amt: <b style={{color:bank.nplRatio>5?'#F87171':'#A0A8B4'}}>AED {nplAmt.toFixed(1)}B</b></span>
+                  <span style={{fontSize:10,color:'#4A5568'}}>Gross Loans: <b style={{color:'#A0A8B4'}}>AED {bank.grossLoans}B</b></span>
+                  {bank.nplPrior>0&&<span style={{fontSize:10,color:'#4A5568'}}>Prior NPL: <b style={{color:'#6B7A8D'}}>{bank.nplPrior}%</b></span>}
+                  <span style={{fontSize:10,color:'#4A5568'}}>Assets: <b style={{color:'#A0A8B4'}}>AED {bank.totalAssets}B</b></span>
+                </div>
+              </div>
+            )})}
+          </div>
+        </div>
+      )}
+
       <div style={{marginTop:16,padding:12,background:'rgba(240,200,80,0.04)',borderRadius:9,borderLeft:'3px solid #F0C850'}}>
         <p style={{fontSize:10,color:'#6B7A8D',lineHeight:1.7}}>
-          <b style={{color:'#F0C850'}}>Sources:</b> Bank annual reports, ADX/DFM filings, AGBI, Khaleej Times, The National, Zawya (Jan-Mar 2026). Foreign bank UAE-specific profits not separately reported.
+          <b style={{color:'#F0C850'}}>Sources:</b> Bank annual reports, ADX/DFM filings, FAB Research, A&M UAE Banking Pulse (Q3 2025), AGBI, Khaleej Times, The National, Zawya. NPL ratios based on latest available data (FY/9M/H1 2025). NPL Amount = Gross Loans x NPL Ratio.
         </p>
       </div>
     </div>
