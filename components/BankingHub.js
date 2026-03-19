@@ -376,9 +376,14 @@ export default function BankingHub() {
       <div style={{background:'linear-gradient(160deg,#0F1A2E 0%,#162440 50%,#1A2D4A 100%)',padding:'30px 16px 22px',position:'relative',overflow:'hidden'}}>
         <div style={{position:'absolute',top:-35,right:-35,width:140,height:140,borderRadius:'50%',background:'radial-gradient(circle,rgba(240,200,80,0.07) 0%,transparent 70%)'}}/>
         <div style={{maxWidth:900,margin:'0 auto',position:'relative'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
+            <span style={{fontSize:9,color:'#6B7A8D',fontWeight:500}}>{"by "}
+              <span style={{color:'#A78BFA',fontWeight:700}}>Vishal Vibin</span>
+            </span>
+            <span style={{padding:'2px 8px',borderRadius:4,background:'rgba(139,92,246,0.15)',color:'#A78BFA',fontSize:8,fontWeight:700,letterSpacing:'0.08em',textTransform:'uppercase'}}>Beta v1.0</span>
+          </div>
           <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:4}}>
             <span style={{fontSize:9,letterSpacing:'0.14em',color:'#F0C850',fontWeight:700,textTransform:'uppercase'}}>UAE Banking Hub</span>
-            <span style={{padding:'2px 6px',borderRadius:4,background:'rgba(139,92,246,0.15)',color:'#A78BFA',fontSize:8,fontWeight:700,letterSpacing:'0.08em',textTransform:'uppercase'}}>Beta</span>
             <span style={{width:20,height:1,background:'#F0C85030'}}/>
             <span style={{fontSize:9,color:'#3A4558'}}>{ALL_BANKS.length} banks</span>
           </div>
@@ -409,16 +414,14 @@ export default function BankingHub() {
       </div>
 
       <div style={{textAlign:'center',padding:'20px 12px',borderTop:'1px solid rgba(255,255,255,0.025)'}}>
-        <div style={{fontSize:9.5,color:'#2D3A4E',marginBottom:8}}>
+        <div style={{fontSize:9.5,color:'#2D3A4E',marginBottom:6}}>
           {"CBUAE Register (June 2025) \u00B7 FY 2025 bank filings \u00B7 Data indicative \u2014 verify with your bank"}
         </div>
-        <div style={{fontSize:10,color:'#4A5568',marginBottom:4}}>
+        <div style={{fontSize:9,color:'#3A4558'}}>
           {"Developed by "}
-          <span style={{color:'#F0C850',fontWeight:700}}>Vishal Vibin</span>
-        </div>
-        <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:6}}>
-          <span style={{padding:'2px 6px',borderRadius:4,background:'rgba(139,92,246,0.12)',color:'#A78BFA',fontSize:8,fontWeight:700,letterSpacing:'0.06em'}}>BETA v1.0</span>
-          <span style={{fontSize:8.5,color:'#2D3A4E'}}>{"\u00A9 2026"}</span>
+          <span style={{color:'#A78BFA',fontWeight:600}}>Vishal Vibin</span>
+          {" \u00B7 \u00A9 2026 \u00B7 "}
+          <span style={{color:'#4A5568'}}>Beta v1.0</span>
         </div>
       </div>
 
